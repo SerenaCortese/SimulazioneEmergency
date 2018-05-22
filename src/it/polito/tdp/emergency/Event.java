@@ -3,10 +3,10 @@ package it.polito.tdp.emergency;
 import java.time.LocalTime;
 
 public class Event implements Comparable<Event>{
-	private LocalTime ora ;
+	private LocalTime ora ; //LocalTime perché ho orari espliciti
 	private EventType tipo ;
 	
-	private Paziente paziente ;
+	private Paziente paziente ;//puntatore alla List in Simulatore
 
 	public Event(LocalTime ora, EventType tipo, Paziente paziente) {
 		super();
@@ -28,7 +28,7 @@ public class Event implements Comparable<Event>{
 	}
 
 	@Override
-	public int compareTo(Event other) {
+	public int compareTo(Event other) {//ordine crescente
 		return this.ora.compareTo(other.getOra()) ;
 	}
 	

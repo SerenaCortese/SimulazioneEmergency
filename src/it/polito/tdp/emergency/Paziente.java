@@ -3,9 +3,9 @@ package it.polito.tdp.emergency;
 import java.time.LocalTime;
 
 public class Paziente {
-	int id ;
-	StatoPaziente stato ;
-	LocalTime oraArrivo ;
+	private int id ;
+	private StatoPaziente stato ;
+	private LocalTime oraArrivo ;
 	
 	
 	public Paziente(int id, StatoPaziente stato, LocalTime oraArrivo) {

@@ -24,7 +24,7 @@ public class Simulatore {
 	private int TIMEOUT_RED = 90;
 
 	// Modello del mondo
-	List<Paziente> pazienti;
+	List<Paziente> pazienti;//pazienti che son lì al momento(se muore o se ne va, andrà tolto)
 	StatoPaziente statoTriage; // il prossimo stato da assegnare
 
 	// Valori in output
@@ -33,7 +33,7 @@ public class Simulatore {
 	private int paz_morti;
 
 	// Coda degli eventi
-	PriorityQueue<Event> queue = new PriorityQueue<>();
+	PriorityQueue<Event> queue = new PriorityQueue<Event>();
 
 	public void init() {
 		this.pazienti = new ArrayList<>();
@@ -54,8 +54,8 @@ public class Simulatore {
 
 	public void run() {
 		Event e;
-		while ((e = queue.poll()) != null) {
-			if (e.getOra().isAfter(T_fine))
+		while ((e = queue.poll()) != null) {//itero finché ho eventi nella coda
+			if (e.getOra().isAfter(T_fine)) //se sono oltre l'ora limite non elaboro quell'evento
 				break;
 
 			processEvent(e);
@@ -67,12 +67,13 @@ public class Simulatore {
 		case ARRIVA:
 			Event e2 = new Event(e.getOra().plusMinutes(DURATION_TRIAGE),
 					EventType.TRIAGE, e.getPaziente()) ;
-			queue.add(e2) ;
+			queue.add(e2) ; //rimetto paziente in coda con tempo dopo 5 minuti(=tempo triage)
 			break ;
 
-		case TRIAGE:
+		case TRIAGE://hai passato il triage e sei in attesa
 			e.getPaziente().setStato(statoTriage);
 			
+			//schedulo gli eventi generati da TIMEOUT(che si ha dopo che è stato assegnato codice)
 			if(statoTriage==StatoPaziente.WHITE) {
 				queue.add(new Event(e.getOra().plusMinutes(TIMEOUT_WHITE),
 						EventType.TIMEOUT_WHITE, e.getPaziente())) ;
@@ -84,8 +85,8 @@ public class Simulatore {
 						EventType.TIMEOUT_RED, e.getPaziente())) ;
 			}
 			
-			// cambiaStatoTriage
-			if(statoTriage==StatoPaziente.WHITE)
+			// cambiaStatoTriage:meccanismo per dare colori a rotazione non stato del paziente dopo attesa
+			if(statoTriage==StatoPaziente.WHITE)//se ho dato a questo paziente un bianco, al prox darò giallo
 				statoTriage=StatoPaziente.YELLOW ;
 			else if(statoTriage==StatoPaziente.YELLOW)
 				statoTriage=StatoPaziente.RED ;
@@ -99,7 +100,7 @@ public class Simulatore {
 			
 			
 		case USCITA:
-			// Registrare l'uscita di e.getPaziente()
+			// Registrare l'uscita di e.getPaziente():paziente curato
 			
 			// Decidere chi deve essere chiamato (sulla base di colore e ora di arrivo)
 			// tra i pazienti attesa
