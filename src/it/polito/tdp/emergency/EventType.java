@@ -9,4 +9,6 @@ public enum EventType {
 	TIMEOUT_WHITE,
 	TIMEOUT_YELLOW,
 	TIMEOUT_RED,
+	
+	POLLING,//periodicamente verifica se ci sono studi liberi e pazienti in attesa
 }
